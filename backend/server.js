@@ -1,25 +1,31 @@
 const express = require('express');
 const cors = require('cors');
-const path = require("path");
+const path = require('path');
 
 const app = express();
 
+/* middleware */
 app.use(cors());
 app.use(express.json());
 
-// in-memory storage
+
+/* in-memory storage */
 const users = [];
 const posts = [];
 
 
-/* AUTH */
+/* AUTH ROUTE */
+
 app.post('/auth', (req, res) => {
 
     const { username, password, action } = req.body;
 
     if (action === 'register') {
 
-        users.push({ username, password });
+        users.push({
+            username,
+            password
+        });
 
         return res.json({
             success: true,
@@ -31,11 +37,17 @@ app.post('/auth', (req, res) => {
     if (action === 'login') {
 
         const user = users.find(
-            u => u.username === username && u.password === password
+            u =>
+                u.username === username &&
+                u.password === password
         );
 
         if (user) {
-            return res.json({ success: true });
+
+            return res.json({
+                success: true
+            });
+
         }
 
         return res.status(401).json({
@@ -60,38 +72,68 @@ app.get('/posts', (req, res) => {
 app.post('/posts', (req, res) => {
 
     posts.unshift({
+
         author: req.body.author,
         text: req.body.text
+
     });
 
-    res.json({ success: true });
+    res.json({
+
+        success: true
+
+    });
 
 });
 
 
-/* SERVE REACT BUILD */
+/* SERVE FRONTEND BUILD */
 
 app.use(
+
     express.static(
-        path.join(__dirname, "../frontend/build")
+
+        path.join(__dirname, '../frontend/build')
+
     )
+
 );
 
-app.get("/*", (req, res) => {
+
+/* REACT ROUTES FIX (Express v5 compatible) */
+
+app.get(/.*/, (req, res) => {
 
     res.sendFile(
-        path.join(__dirname, "../frontend/build/index.html")
+
+        path.join(
+
+            __dirname,
+            '../frontend/build/index.html'
+
+        )
+
     );
 
 });
 
 
-/* RENDER PORT */
+/* PORT FOR RENDER */
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
 
-    console.log("Server running on port", PORT);
+app.listen(
 
-});
+    PORT,
+
+    () => {
+
+        console.log(
+            'Server running on port',
+            PORT
+        );
+
+    }
+
+);
