@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require("path");
 
 const app = express();
 app.use(cors());
@@ -36,4 +37,18 @@ app.post('/posts', (req, res) => {
     res.json({ success: true });
 });
 
-app.listen(5001, () => console.log('Basic Backend running on http://localhost:5001'));
+
+/* serve frontend */
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+});
+
+
+/* IMPORTANT for render */
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, () => {
+    console.log("Server running on port", PORT);
+});
