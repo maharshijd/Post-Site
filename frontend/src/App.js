@@ -10,7 +10,7 @@ Backend runs on: http://localhost:5001
 All API calls must go to WAF (8000)
 */
 
-const API = "http://localhost:8000";
+const API = "http://localhost:5001";
 
 const styles = {
   container: { maxWidth: '500px', margin: '40px auto', fontFamily: 'system-ui, sans-serif', color: '#333' },
